@@ -44,8 +44,8 @@ def train_loop(dataloader, model, loss_fn, optimizer):
 
 
 def main():
-    model = SimpleModel(in_shape=(25, 25))
-    ds = CImgDataset("./example.zip")
+    model = SimpleModel(in_shape=(15, 15))
+    ds = CImgDataset("./data.zip")
     loader = CImgDataLoader(ds, batch_size=10, shuffle=True)
     loss_fn = nn.MSELoss()
 
