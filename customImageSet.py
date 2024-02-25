@@ -5,8 +5,8 @@ from torch.utils.data import Dataset  # helps create mini-batches of data to tra
 from skimage import io
 
 class CustomImageDataset(Dataset):
-    def __init__(self, csv_file, root_dir, transform=None):  # root dir of images, transform optional
-        self.annotations = pd.read_csv(csv_file)
+    def __init__(self, json_file, root_dir, transform=None):  # root dir of images, transform optional
+        self.annotations = pd.read_json(json_file)
         self.root_dir = root_dir
         self.transform = transform
 

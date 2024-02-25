@@ -32,7 +32,7 @@ num_epochs = 1
 
 # Load data
 # Since going to load as image, convert to tensor
-dataset = CustomImageDataset(csv_file='left_right.csv', root_dir='some_shoeprint_images', transform=transforms.ToTensor())
+dataset = CustomImageDataset(json_file='left_right.csv', root_dir='some_shoeprint_images', transform=transforms.ToTensor())
 
 train_set, test_set = torch.utils.data.random_split(dataset, [10, 2])
 train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
