@@ -14,8 +14,7 @@ class CustomImageDataset():
         for f in files:
             with open('processed_shoeprint_jsons/' + f) as fi:
                 d = json.load((fi))
-                print(d)
-                output_file.write(json.dumps(d))
+                output_file.write(f + ': [' + json.dumps(d, indent=4) + '],')
         #with open('all_jsons.json', 'w') as outfile:
         #    json.dump()
 
