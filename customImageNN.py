@@ -13,8 +13,8 @@ import zipfile
 class NN(nn.Module):
     def __init__(self, input_size, num_classes):  # input size 784 since 28x28 images
         super(NN, self).__init__()
-        self.fc1 = nn.Linear(input_size, 12)  # 2 layers, 12 nodes
-        self.fc2 = nn.Linear(12, num_classes)  # 50 is num of examples to run
+        self.fc1 = nn.Linear(input_size, 46)  # 2 layers, 46 nodes, col of mat2
+        self.fc2 = nn.Linear(46, num_classes)  # 12 is num of examples to run, can control mat1 and mat2
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -25,17 +25,19 @@ class NN(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyperparameters
-input_size = 116600
+input_size = 625  # row of mat2
 num_classes = 10
 learning_rate = 0.001
-batch_size = 64
+batch_size = 12  # controls row of map1 if correct size or less
 num_epochs = 1
 
 # Load data
 # Since going to load as image, convert to tensor
-dataset = CustomImageDataset(root_dir='some_shoeprint_images', transform=transforms.ToTensor())
+dataset = CustomImageDataset(root_dir='test/data', transform=transforms.ToTensor())
 
-train_set, test_set = torch.utils.data.random_split(dataset, [10, 2])
+train_num = int(dataset.dataCount - dataset.dataCount / 2)
+test_num = dataset.dataCount - train_num - 1
+train_set, test_set = torch.utils.data.random_split(dataset, [train_num, test_num])  #train_num is row of map1
 train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
@@ -83,7 +85,7 @@ def check_accuracy(loader, model, is_training):
         for x, y in loader:
             x = x.to(device=device)
             y = y.to(device=device)
-            x = x.reshape(x.shape[0], -1)  # This is the line that's making the dang big number
+            x = x.reshape(x.shape[0], -1)
 
             scores = model(x)
 
