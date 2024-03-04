@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader  # helps create mini-batches of data to 
 import torchvision.datasets as datasets  # provides standard datasets from Pytorch
 import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
+import zipfile
 
 # Create Fully Connected Network
 class NN(nn.Module):
@@ -32,7 +33,7 @@ num_epochs = 1
 
 # Load data
 # Since going to load as image, convert to tensor
-dataset = CustomImageDataset(csv_file='left_right.csv', root_dir='some_shoeprint_images', transform=transforms.ToTensor())
+dataset = CustomImageDataset(root_dir='some_shoeprint_images', transform=transforms.ToTensor())
 
 train_set, test_set = torch.utils.data.random_split(dataset, [10, 2])
 train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
