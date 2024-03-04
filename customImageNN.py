@@ -14,7 +14,7 @@ class NN(nn.Module):
     def __init__(self, input_size, num_classes):  # input size 784 since 28x28 images
         super(NN, self).__init__()
         self.fc1 = nn.Linear(input_size, 46)  # 2 layers, 46 nodes, col of mat2
-        self.fc2 = nn.Linear(46, num_classes)  # 12 is num of examples to run, can control mat1 and mat2
+        self.fc2 = nn.Linear(46, num_classes)  # 46 is num of examples to run, can control mat1 and mat2
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -33,7 +33,7 @@ num_epochs = 1
 
 # Load data
 # Since going to load as image, convert to tensor
-dataset = CustomImageDataset(root_dir='test/data', transform=transforms.ToTensor())
+dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
 
 train_num = int(dataset.dataCount - dataset.dataCount / 2)
 test_num = dataset.dataCount - train_num - 1
