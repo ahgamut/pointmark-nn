@@ -26,10 +26,10 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyperparameters
 input_size = 625  # row of mat2
-num_classes = 10
+num_classes = 100
 learning_rate = 0.001
 batch_size = 12  # controls row of map1 if correct size or less
-num_epochs = 1
+num_epochs = 2
 
 # Load data
 # Since going to load as image, convert to tensor
