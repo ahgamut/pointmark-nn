@@ -13,8 +13,8 @@ import zipfile
 class NN(nn.Module):
     def __init__(self, input_size, num_classes):  # input size 784 since 28x28 images
         super(NN, self).__init__()
-        self.fc1 = nn.Linear(input_size, 46)  # 2 layers, 46 nodes, col of mat2
-        self.fc2 = nn.Linear(46, num_classes)  # 46 is num of examples to run, can control mat1 and mat2
+        self.fc1 = nn.Linear(input_size, 100)  # 2 layers, 100 nodes, col of mat2
+        self.fc2 = nn.Linear(100, num_classes)  # 100 is num of examples to run, can control mat1 and mat2
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -35,9 +35,8 @@ num_epochs = 1
 # Since going to load as image, convert to tensor
 dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
 
-train_num = int(dataset.dataCount - dataset.dataCount / 2)
-test_num = dataset.dataCount - train_num - 1
-train_set, test_set = torch.utils.data.random_split(dataset, [train_num, test_num])  #train_num is row of map1
+
+train_set, test_set = torch.utils.data.random_split(dataset, [0.9, 0.1])  #first is row of map1
 train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
