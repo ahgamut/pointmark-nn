@@ -1,24 +1,22 @@
-# Imports
 import torch
 import torch.nn as nn  # nn stuff and loss
 import torch.optim as optim  # optimization
 import torch.nn.functional as F  # relu, tanh, functions with no params (nn also has)
 from torch.utils.data import DataLoader  # helps create mini-batches of data to train on
-import torchvision.datasets as datasets  # provides standard datasets from Pytorch
 import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
-import zipfile
 
-# Create Fully Connected Network
 class NN(nn.Module):
     def __init__(self, input_size, num_classes):  # input size 784 since 28x28 images
         super(NN, self).__init__()
         self.fc1 = nn.Linear(input_size, 100)  # 2 layers, 100 nodes, col of mat2
-        self.fc2 = nn.Linear(100, num_classes)  # 100 is num of examples to run, can control mat1 and mat2
+        self.fc2 = nn.Linear(100, 100)  # 100 is num of examples to run, can control mat1 and mat2
+        self.fc3 = nn.Linear(100, num_classes)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
+        x = self.fc3(x)
         return x
 
 # Set device
@@ -26,15 +24,14 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyperparameters
 input_size = 625  # row of mat2
-num_classes = 100
+num_classes = 2
 learning_rate = 0.001
 batch_size = 12  # controls row of map1 if correct size or less
-num_epochs = 2
+num_epochs = 3
 
 # Load data
 # Since going to load as image, convert to tensor
 dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
-
 
 train_set, test_set = torch.utils.data.random_split(dataset, [0.9, 0.1])  #first is row of map1
 train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
@@ -44,7 +41,7 @@ test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 model = NN(input_size=input_size, num_classes=num_classes).to(device)
 
 # Loss and optimizer
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss()  # could try MSELoss
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train network
@@ -91,9 +88,9 @@ def check_accuracy(loader, model, is_training):
             #  Shape of scores is 64 (originally) images * 10
             #  Want to know which one is the maximum of those 10 digits.
             #  I.e. if max value is first one, digit 0.
-            _, predictions = scores.max(1)  # max of second dimension
+            _, predictions = scores.max(1)  #  max of second dimension
             num_correct += (predictions == y).sum()
-            num_samples += predictions.size(0)  # size of first dimension
+            num_samples += predictions.size(0)  #  size of first dimension
 
         print(f'Got {num_correct} / {num_samples} with accuracy {float(num_correct)/float(num_samples)*100:.2f}')
 
