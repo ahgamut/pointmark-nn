@@ -47,7 +47,7 @@ class CImgDataLoader(DataLoader):
 
 
 def main():
-    ds = CImgDataset("./data.zip")
+    ds = CImgDataset("./test.zip")
     loader = CImgDataLoader(ds, batch_size=10, shuffle=True)
 
     for sample in loader:
