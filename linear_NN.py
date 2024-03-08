@@ -7,7 +7,7 @@ import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
 
 class NN(nn.Module):
-    def __init__(self, input_size, num_classes):  # input size 784 since 28x28 images
+    def __init__(self, input_size, num_classes):  # input size 625 since 25x25 images
         super(NN, self).__init__()
         self.fc1 = nn.Linear(input_size, 100)  # 2 layers, 100 nodes, col of mat2
         self.fc2 = nn.Linear(100, 100)  # 100 is num of examples to run, can control mat1 and mat2
