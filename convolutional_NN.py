@@ -48,7 +48,6 @@ test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 # model = CNN(input_size=input_size, num_classes=num_classes).to(device)
 model = CNN()
 x = torch.randn(100, 1, 25, 25)
-# print(model(x).shape)
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()  # could try MSELoss
