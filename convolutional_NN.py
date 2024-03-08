@@ -7,14 +7,14 @@ import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
 
 class CNN(nn.Module):
-    def __init__(self, input_size=1, num_classes=2):  # input size 784 since 28x28 images
+    def __init__(self, input_size=1, num_classes=40):  # input size 784 since 28x28 images
         super(CNN, self).__init__()
         self.conv1 = nn.Conv2d(in_channels=input_size, out_channels=10,
                                kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))  # stride and padding are standard
         self.pool = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
-        self.conv2 = nn.Conv2d(in_channels=10, out_channels=20,
+        self.conv2 = nn.Conv2d(in_channels=10, out_channels=num_classes,  # out_channels here controls col of mat1
                                kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        self.fc1 = nn.Linear(20 * 6 * 6, num_classes)  # fully connected layer, row of mat2
+        self.fc1 = nn.Linear(num_classes * 6 * 6, num_classes)  # fully connected layer, row of mat2
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -33,7 +33,7 @@ input_size = 1  # row of mat2
 num_classes = 2
 learning_rate = 0.001
 batch_size = 12  # controls row of map1 if correct size or less
-num_epochs = 1
+num_epochs = 3
 
 # Load data
 # Since going to load as image, convert to tensor
@@ -48,7 +48,6 @@ test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 model = CNN()
 x = torch.randn(100, 1, 25, 25)
 # print(model(x).shape)
-
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()  # could try MSELoss
