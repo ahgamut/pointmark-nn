@@ -6,20 +6,22 @@ from torch.utils.data import DataLoader  # helps create mini-batches of data to 
 import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
 
+# LSTM stands for Long Short Term Memory, a specialized version of a Recurrent Neural Network
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes):  # input size 625 since 25x25 images
         super(RNN, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
                                                             # might remove batch_first
         self.fc = nn.Linear(hidden_size*sequence_length, num_classes)
 
     def forward(self, x):
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(device) # lstm needs separate cell state
 
         # Forward Propagation
-        out, _ = self.gru(x, h0)  # don't need to store hidden state
+        out, _ = self.lstm(x, (h0, c0))  # send tuple of hidden and cell state, don't need to store hidden state
         out = out.reshape(out.shape[0], -1)
         out = self.fc(out)
         return out
