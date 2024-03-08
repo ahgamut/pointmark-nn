@@ -11,7 +11,7 @@ class RNN(nn.Module):
         super(RNN, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        self.rnn = nn.RNN(input_size, hidden_size, num_layers, batch_first=True)
+        self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
                                                             # might remove batch_first
         self.fc = nn.Linear(hidden_size*sequence_length, num_classes)
 
@@ -19,7 +19,7 @@ class RNN(nn.Module):
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(device)
 
         # Forward Propagation
-        out, _ = self.rnn(x, h0)  # don't need to store hidden state
+        out, _ = self.gru(x, h0)  # don't need to store hidden state
         out = out.reshape(out.shape[0], -1)
         out = self.fc(out)
         return out
@@ -33,7 +33,7 @@ sequence_length = 25
 num_layers = 2
 hidden_size = 231
 num_classes = 2
-learning_rate = 0.001
+learning_rate = 0.005
 batch_size = 12  # controls row of map1 if correct size or less
 num_epochs = 3
 
