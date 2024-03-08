@@ -32,7 +32,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 input_size = 1  # row of mat2
 num_classes = 2
 learning_rate = 0.001
-batch_size = 12  # controls row of map1 if correct size or less
+batch_size = 2  # controls row of map1 if correct size or less, controls how many samples are tested together,
+                # so lower is more accurate but slower
 num_epochs = 3
 
 # Load data
