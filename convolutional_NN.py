@@ -7,15 +7,14 @@ import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
 
 class CNN(nn.Module):
-    def __init__(self, input_size = 1, num_classes = 2):  # input size 784 since 28x28 images
+    def __init__(self, input_size=1, num_classes=2):  # input size 784 since 28x28 images
         super(CNN, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=10,
+        self.conv1 = nn.Conv2d(in_channels=input_size, out_channels=10,
                                kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))  # stride and padding are standard
         self.pool = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
         self.conv2 = nn.Conv2d(in_channels=10, out_channels=20,
                                kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         self.fc1 = nn.Linear(20 * 6 * 6, num_classes)  # fully connected layer, row of mat2
-                                            # 7 IS NOT OUT INPUT! FIND THE CORRECT ONE!
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -47,8 +46,8 @@ test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 # Initialize network
 # model = CNN(input_size=input_size, num_classes=num_classes).to(device)
 model = CNN()
-x = torch.randn(64, 1, 24, 24)  # 28 IS NOT CORRECT! 64 might not be either
-print(model(x).shape)
+x = torch.randn(100, 1, 25, 25)
+# print(model(x).shape)
 
 
 # Loss and optimizer
