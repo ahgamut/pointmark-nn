@@ -34,7 +34,7 @@ num_classes = 2
 learning_rate = 0.001
 batch_size = 25  # controls row of map1 if correct size or less, controls how many samples are tested together,
                 # so lower is more accurate but slower
-num_epochs = 3
+num_epochs = 1
 
 # Load data
 # Since going to load as image, convert to tensor
@@ -54,6 +54,7 @@ criterion = nn.CrossEntropyLoss()  # could try MSELoss
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train network
+
 for epoch in range(num_epochs):  # one epoch = network has seen all images in dataset
     for batch_idx, (data, targets) in enumerate(train_loader):
 
@@ -102,4 +103,11 @@ def check_accuracy(loader, model, is_training):
     #  return float(num_correct)/float(num_samples)*100
 
 check_accuracy(train_loader, model, True)
+check_accuracy(test_loader, model, False)
+
+torch.save(model.state_dict(), "../model_weights")
+model = CNN(input_size=input_size, num_classes=num_classes).to(device)
+model.load_state_dict(torch.load("../model_weights"))
+model.eval()
+
 check_accuracy(test_loader, model, False)
