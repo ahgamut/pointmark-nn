@@ -21,7 +21,7 @@ class CustomImageDataset(Dataset):
         '''
         self.dataCount = 2725
 
-        self.annotations = pd.read_csv('test_csv.csv')
+        self.annotations = pd.read_csv('../test_csv.csv')
         self.root_dir = root_dir
         self.transform = transform
 

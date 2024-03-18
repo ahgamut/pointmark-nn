@@ -40,7 +40,7 @@ num_epochs = 3
 # Since going to load as image, convert to tensor
 dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
 
-train_set, test_set = torch.utils.data.random_split(dataset, [0.9, 0.1])  #first is row of map1
+train_set, test_set = torch.utils.data.random_split(dataset, [0.8, 0.2])  #first is row of map1
 train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
