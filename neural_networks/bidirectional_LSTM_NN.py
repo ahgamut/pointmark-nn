@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader  # helps create mini-batches of data to 
 import torchvision.transforms as transforms  # helpful transforms
 from customImageSet import CustomImageDataset
 
-# LSTM stands for Long Short Term Memory, a specialized version of a Recurrent Neural Network
+# Note: this model is meant for 1D data, not 2D, hence the low accuracy
 class BidirectionalRNN(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes):  # input size 625 since 25x25 images
         super(BidirectionalRNN, self).__init__()

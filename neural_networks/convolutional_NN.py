@@ -14,7 +14,7 @@ class CNN(nn.Module):
         self.pool = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
         self.conv2 = nn.Conv2d(in_channels=10, out_channels=num_classes,  # out_channels here controls col of mat1
                                kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        self.fc1 = nn.Linear(num_classes * 6 * 6, num_classes)  # fully connected layer, row of mat2
+        self.fc1 = nn.Linear(num_classes * 25 * 25, num_classes)  # fully connected layer, row of mat2
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -32,7 +32,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 input_size = 1  # row of mat2
 num_classes = 2
 learning_rate = 0.001
-batch_size = 2  # controls row of map1 if correct size or less, controls how many samples are tested together,
+batch_size = 25  # controls row of map1 if correct size or less, controls how many samples are tested together,
                 # so lower is more accurate but slower
 num_epochs = 3
 
@@ -45,8 +45,8 @@ train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True
 test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
 # Initialize network
-# model = CNN(input_size=input_size, num_classes=num_classes).to(device)
-model = CNN()
+model = CNN(input_size=input_size, num_classes=num_classes).to(device)
+# model = CNN()
 x = torch.randn(100, 1, 25, 25)
 
 # Loss and optimizer
