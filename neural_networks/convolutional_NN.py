@@ -105,9 +105,9 @@ def check_accuracy(loader, model, is_training):
 check_accuracy(train_loader, model, True)
 check_accuracy(test_loader, model, False)
 
-torch.save(model.state_dict(), "../model_weights")
+torch.save(model.state_dict(), "../model_weights_convolutional")
 model = CNN(input_size=input_size, num_classes=num_classes).to(device)
-model.load_state_dict(torch.load("../model_weights"))
+model.load_state_dict(torch.load("../model_weights_convolutional"))
 model.eval()
 
 check_accuracy(test_loader, model, False)

@@ -104,3 +104,10 @@ def check_accuracy(loader, model, is_training):
 
 check_accuracy(train_loader, model, True)
 check_accuracy(test_loader, model, False)
+
+torch.save(model.state_dict(), "../model_weights_LSTM")
+model = RNN(input_size, hidden_size, num_layers, num_classes).to(device)
+model.load_state_dict(torch.load("../model_weights_LSTM"))
+model.eval()
+
+check_accuracy(test_loader, model, False)
