@@ -29,7 +29,7 @@ class CNN(nn.Module):
             padding=(1, 1),
         )
         self.fc1 = nn.Linear(
-            num_classes * 25 * 25, num_classes
+            72, num_classes
         )  # fully connected layer, row of mat2
 
     def forward(self, x):
