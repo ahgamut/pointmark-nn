@@ -12,7 +12,7 @@ class CustomImageDataset(Dataset):
 
         '''
         open('../test_csv.csv', 'w').close()
-        with open('test_csv.csv', 'a', newline='') as f:
+        with open('../test_csv.csv', 'a', newline='') as f:
             csv_writer = csv.writer(f, dialect="excel")
             files = os.listdir("D:/test/data")
             for fi in files:
