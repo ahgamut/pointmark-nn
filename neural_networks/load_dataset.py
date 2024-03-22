@@ -19,6 +19,7 @@ class CImgDataset(Dataset):
             zip_name, mode="r", compression=zipfile.ZIP_DEFLATED
         )
         self.images = [x for x in self.zfile.namelist() if x.endswith(".png")]
+        print(len(self.images), "images in dataset")
         self.transforms = torch.nn.Sequential(
             transforms.RandomInvert(),
             transforms.RandomVerticalFlip(0.5),
@@ -40,7 +41,7 @@ class CImgDataset(Dataset):
         img = torch.from_numpy(img).unsqueeze(0)
         is_corner = 1 if "_valid_" in img_name else 0
 
-        return self.transforms(img).float(), torch.Tensor(is_corner).float()
+        return self.transforms(img).float(), torch.tensor(is_corner)
 
 
 class CImgDataLoader(DataLoader):
