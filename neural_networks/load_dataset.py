@@ -13,6 +13,7 @@ from torchvision import transforms, utils
 
 class CImgDataset(Dataset):
     def __init__(self, zip_name):
+        print("CUDA is available?", torch.cuda.is_available())
         self.zip_name = zip_name
         self.zfile = zipfile.ZipFile(
             zip_name, mode="r", compression=zipfile.ZIP_DEFLATED

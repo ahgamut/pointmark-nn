@@ -68,6 +68,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train network
 for epoch in range(num_epochs):  # one epoch = network has seen all images in dataset
+    print(epoch)
     for batch_idx, (data, targets) in enumerate(train_loader):
 
         # get data to cuda if possible
