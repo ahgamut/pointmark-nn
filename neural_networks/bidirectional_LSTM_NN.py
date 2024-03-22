@@ -50,7 +50,7 @@ def train_model():
     num_classes = 2
     learning_rate = 0.001
     batch_size = 12  # controls row of map1 if correct size or less
-    num_epochs = 10
+    num_epochs = 200
 
     # Load data
     # Since going to load as image, convert to tensor

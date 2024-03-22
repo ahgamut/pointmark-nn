@@ -80,7 +80,7 @@ def run_on_image(maker, img):
 
 
 def main():
-    make1 = ModelMaker(MOD6.make, "../model_weights_bidirectional", False)
+    make1 = ModelMaker(MOD1.make, "../model_weights_linear", True)
     a = np.zeros((25, 25), dtype=np.float32)
     print(make1(a))
     image = skio.imread("../examples.png")
