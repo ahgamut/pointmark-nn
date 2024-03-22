@@ -1,5 +1,4 @@
 # ignore dataset outputs
-model_weights*
 *.json
 *.zip
 *.psb

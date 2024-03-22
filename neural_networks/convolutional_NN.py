@@ -28,9 +28,7 @@ class CNN(nn.Module):
             stride=(1, 1),
             padding=(1, 1),
         )
-        self.fc1 = nn.Linear(
-            72, num_classes
-        )  # fully connected layer, row of mat2
+        self.fc1 = nn.Linear(72, num_classes)  # fully connected layer, row of mat2
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -45,54 +43,59 @@ class CNN(nn.Module):
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Hyperparameters
-input_size = 1  # row of mat2
-num_classes = 2
-learning_rate = 0.001
-batch_size = 25  # controls row of map1 if correct size or less, controls how many samples are tested together,
-# so lower is more accurate but slower
-num_epochs = 10
 
-# Load data
-# Since going to load as image, convert to tensor
-# dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
-dataset = CImgDataset("../test51.zip")
+def train_model():
+    # Hyperparameters
+    input_size = 1  # row of mat2
+    num_classes = 2
+    learning_rate = 0.001
+    batch_size = 25  # controls row of map1 if correct size or less, controls how many samples are tested together,
+    # so lower is more accurate but slower
+    num_epochs = 10
 
-train_set, test_set = torch.utils.data.random_split(
-    dataset, [0.8, 0.2]
-)  # first is row of map1
-train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
-test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
+    # Load data
+    # Since going to load as image, convert to tensor
+    # dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
+    dataset = CImgDataset("../test51.zip")
 
-# Initialize network
-model = CNN(input_size=input_size, num_classes=num_classes).to(device)
-# model = CNN()
-x = torch.randn(100, 1, 25, 25)
+    train_set, test_set = torch.utils.data.random_split(
+        dataset, [0.8, 0.2]
+    )  # first is row of map1
+    train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
-# Loss and optimizer
-criterion = nn.CrossEntropyLoss()  # could try MSELoss
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    # Initialize network
+    model = CNN(input_size=input_size, num_classes=num_classes).to(device)
+    # model = CNN()
+    x = torch.randn(100, 1, 25, 25)
 
-# Train network
+    # Loss and optimizer
+    criterion = nn.CrossEntropyLoss()  # could try MSELoss
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-for epoch in range(num_epochs):  # one epoch = network has seen all images in dataset
-    print(epoch)
-    for batch_idx, (data, targets) in enumerate(train_loader):
+    # Train network
 
-        # get data to cuda if possible
-        data = data.to(device=device)
-        targets = targets.to(device=device)
+    for epoch in range(
+        num_epochs
+    ):  # one epoch = network has seen all images in dataset
+        print(epoch)
+        for batch_idx, (data, targets) in enumerate(train_loader):
 
-        # forward
-        scores = model(data)
-        loss = criterion(scores, targets)
+            # get data to cuda if possible
+            data = data.to(device=device)
+            targets = targets.to(device=device)
 
-        # backward
-        optimizer.zero_grad()  # set gradients to 0 for each batch to not store backprop calc from previous forwards
-        loss.backward()
+            # forward
+            scores = model(data)
+            loss = criterion(scores, targets)
 
-        # gradient descent or adam step
-        optimizer.step()
+            # backward
+            optimizer.zero_grad()  # set gradients to 0 for each batch to not store backprop calc from previous forwards
+            loss.backward()
+
+            # gradient descent or adam step
+            optimizer.step()
+    return model, train_loader, test_loader
 
 
 # Check training accuracy
@@ -127,12 +130,17 @@ def check_accuracy(loader, model, is_training):
     #  return float(num_correct)/float(num_samples)*100
 
 
-check_accuracy(train_loader, model, True)
-check_accuracy(test_loader, model, False)
+def main():
+    model, train_loader, test_loader = train_model()
+    check_accuracy(train_loader, model, True)
+    check_accuracy(test_loader, model, False)
 
-torch.save(model.state_dict(), "../model_weights_convolutional")
-model = CNN(input_size=input_size, num_classes=num_classes).to(device)
-model.load_state_dict(torch.load("../model_weights_convolutional"))
-model.eval()
+    torch.save(model.state_dict(), "../model_weights_convolutional")
+    model = CNN(input_size=input_size, num_classes=num_classes).to(device)
+    model.load_state_dict(torch.load("../model_weights_convolutional"))
+    model.eval()
 
-check_accuracy(test_loader, model, False)
+    check_accuracy(test_loader, model, False)
+
+if __name__ == '__main__':
+    main()

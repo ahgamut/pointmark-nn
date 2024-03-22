@@ -39,53 +39,62 @@ class BidirectionalRNN(nn.Module):
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Hyperparameters
-input_size = 25  # row of mat2
-sequence_length = 25
-num_layers = 3
-hidden_size = 256
-num_classes = 2
-learning_rate = 0.001
-batch_size = 12  # controls row of map1 if correct size or less
-num_epochs = 10
 
-# Load data
-# Since going to load as image, convert to tensor
-# dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
-dataset = CImgDataset("../test51.zip")
+def train_model():
 
-train_set, test_set = torch.utils.data.random_split(
-    dataset, [0.8, 0.2]
-)  # first is row of map1
-train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
-test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
+    # Hyperparameters
+    input_size = 25  # row of mat2
+    sequence_length = 25
+    num_layers = 3
+    hidden_size = 256
+    num_classes = 2
+    learning_rate = 0.001
+    batch_size = 12  # controls row of map1 if correct size or less
+    num_epochs = 10
 
-# Initialize network
-model = BidirectionalRNN(input_size, hidden_size, num_layers, num_classes).to(device)
+    # Load data
+    # Since going to load as image, convert to tensor
+    # dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
+    dataset = CImgDataset("../test51.zip")
 
-# Loss and optimizer
-criterion = nn.CrossEntropyLoss()  # could try MSELoss
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    train_set, test_set = torch.utils.data.random_split(
+        dataset, [0.8, 0.2]
+    )  # first is row of map1
+    train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
-# Train network
-for epoch in range(num_epochs):  # one epoch = network has seen all images in dataset
-    print(epoch)
-    for batch_idx, (data, targets) in enumerate(train_loader):
+    # Initialize network
+    model = BidirectionalRNN(input_size, hidden_size, num_layers, num_classes).to(
+        device
+    )
 
-        # get data to cuda if possible
-        data = data.to(device=device).squeeze(1)
-        targets = targets.to(device=device)
+    # Loss and optimizer
+    criterion = nn.CrossEntropyLoss()  # could try MSELoss
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-        # forward
-        scores = model(data)
-        loss = criterion(scores, targets)
+    # Train network
+    for epoch in range(
+        num_epochs
+    ):  # one epoch = network has seen all images in dataset
+        print(epoch)
+        for batch_idx, (data, targets) in enumerate(train_loader):
 
-        # backward
-        optimizer.zero_grad()  # set gradients to 0 for each batch to not store backprop calc from previous forwards
-        loss.backward()
+            # get data to cuda if possible
+            data = data.to(device=device).squeeze(1)
+            print(data.shape)
+            targets = targets.to(device=device)
 
-        # gradient descent or adam step
-        optimizer.step()
+            # forward
+            scores = model(data)
+            loss = criterion(scores, targets)
+
+            # backward
+            optimizer.zero_grad()  # set gradients to 0 for each batch to not store backprop calc from previous forwards
+            loss.backward()
+
+            # gradient descent or adam step
+            optimizer.step()
+    return model, train_loader, test_loader
 
 
 # Check training accuracy
@@ -120,12 +129,20 @@ def check_accuracy(loader, model, is_training):
     #  return float(num_correct)/float(num_samples)*100
 
 
-check_accuracy(train_loader, model, True)
-check_accuracy(test_loader, model, False)
+def main():
+    model, train_loader, test_loader = train_model()
+    check_accuracy(train_loader, model, True)
+    check_accuracy(test_loader, model, False)
 
-torch.save(model.state_dict(), "../model_weights_bidirectional")
-model = BidirectionalRNN(input_size, hidden_size, num_layers, num_classes).to(device)
-model.load_state_dict(torch.load("../model_weights_bidirectional"))
-model.eval()
+    torch.save(model.state_dict(), "../model_weights_bidirectional")
+    model = BidirectionalRNN(input_size, hidden_size, num_layers, num_classes).to(
+        device
+    )
+    model.load_state_dict(torch.load("../model_weights_bidirectional"))
+    model.eval()
 
-check_accuracy(test_loader, model, False)
+    check_accuracy(test_loader, model, False)
+
+
+if __name__ == "__main__":
+    main()
