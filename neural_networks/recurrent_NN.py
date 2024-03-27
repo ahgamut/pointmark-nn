@@ -8,10 +8,9 @@ from customImageSet import CustomImageDataset
 from load_dataset import CImgDataset
 
 
-# GRU stands for Gated Recurrent Unit, a specialized version of a Recurrent Neural Network
 class RNN(nn.Module):
     def __init__(
-        self, input_size, hidden_size, num_layers, num_classes
+        self, input_size, hidden_size, num_layers, num_classes, sequence_length
     ):  # input size 625 since 25x25 images
         super(RNN, self).__init__()
         self.hidden_size = hidden_size
@@ -33,53 +32,56 @@ class RNN(nn.Module):
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Hyperparameters
-input_size = 25  # row of mat2
-sequence_length = 25
-num_layers = 2
-hidden_size = 256
-num_classes = 2
-learning_rate = 0.001  # note, for a regular RNN, change this to 0.001
-batch_size = 12  # controls row of map1 if correct size or less
-num_epochs = 200
+def train_model():
 
-# Load data
-# Since going to load as image, convert to tensor
-# dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
-dataset = CImgDataset("../test51.zip")
+    # Hyperparameters
+    input_size = 25  # row of mat2
+    sequence_length = 25
+    num_layers = 3
+    hidden_size = 256
+    num_classes = 2
+    learning_rate = 0.001  # note, for a regular RNN, change this to 0.001
+    batch_size = 12  # controls row of map1 if correct size or less
+    num_epochs = 1
 
-train_set, test_set = torch.utils.data.random_split(
-    dataset, [0.8, 0.2]
-)  # first is row of map1
-train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
-test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
+    # Load data
+    # Since going to load as image, convert to tensor
+    # dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
+    dataset = CImgDataset("../test.zip")
 
-# Initialize network
-model = RNN(input_size, hidden_size, num_layers, num_classes).to(device)
+    train_set, test_set = torch.utils.data.random_split(
+        dataset, [0.8, 0.2]
+    )  # first is row of map1
+    train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(dataset=test_set, batch_size=batch_size, shuffle=True)
 
-# Loss and optimizer
-criterion = nn.CrossEntropyLoss()  # could try MSELoss
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    # Initialize network
+    model = RNN(input_size, hidden_size, num_layers, num_classes, sequence_length).to(device)
 
-# Train network
-for epoch in range(num_epochs):  # one epoch = network has seen all images in dataset
-    print(epoch)
-    for batch_idx, (data, targets) in enumerate(train_loader):
+    # Loss and optimizer
+    criterion = nn.CrossEntropyLoss()  # could try MSELoss
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-        # get data to cuda if possible
-        data = data.to(device=device).squeeze(1)
-        targets = targets.to(device=device)
+    # Train network
+    for epoch in range(num_epochs):  # one epoch = network has seen all images in dataset
+        print(epoch)
+        for batch_idx, (data, targets) in enumerate(train_loader):
 
-        # forward
-        scores = model(data)
-        loss = criterion(scores, targets)
+            # get data to cuda if possible
+            data = data.to(device=device).squeeze(1)
+            targets = targets.to(device=device)
 
-        # backward
-        optimizer.zero_grad()  # set gradients to 0 for each batch to not store backprop calc from previous forwards
-        loss.backward()
+            # forward
+            scores = model(data)
+            loss = criterion(scores, targets)
 
-        # gradient descent or adam step
-        optimizer.step()
+            # backward
+            optimizer.zero_grad()  # set gradients to 0 for each batch to not store backprop calc from previous forwards
+            loss.backward()
+
+            # gradient descent or adam step
+            optimizer.step()
+    return model, train_loader, test_loader
 
 
 # Check training accuracy
@@ -113,13 +115,17 @@ def check_accuracy(loader, model, is_training):
     model.train()
     #  return float(num_correct)/float(num_samples)*100
 
+def main():
+    model, train_loader, test_loader = train_model()
+    check_accuracy(train_loader, model, True)
+    check_accuracy(test_loader, model, False)
 
-check_accuracy(train_loader, model, True)
-check_accuracy(test_loader, model, False)
+    torch.save(model.state_dict(), "../model_weights_recurrent")
+    model = RNN(25, 256, 3, 2, 25).to(device)
+    model.load_state_dict(torch.load("../model_weights_recurrent"))
+    model.eval()
 
-torch.save(model.state_dict(), "../model_weights_recurrent")
-model = RNN(input_size, hidden_size, num_layers, num_classes).to(device)
-model.load_state_dict(torch.load("../model_weights_recurrent"))
-model.eval()
+    check_accuracy(test_loader, model, False)
 
-check_accuracy(test_loader, model, False)
+if __name__ == "__main__":
+    main()

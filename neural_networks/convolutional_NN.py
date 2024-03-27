@@ -51,12 +51,12 @@ def train_model():
     learning_rate = 0.001
     batch_size = 25  # controls row of map1 if correct size or less, controls how many samples are tested together,
     # so lower is more accurate but slower
-    num_epochs = 200
+    num_epochs = 10
 
     # Load data
     # Since going to load as image, convert to tensor
     # dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
-    dataset = CImgDataset("../test51.zip")
+    dataset = CImgDataset("../test.zip")
 
     train_set, test_set = torch.utils.data.random_split(
         dataset, [0.8, 0.2]
@@ -136,7 +136,7 @@ def main():
     check_accuracy(test_loader, model, False)
 
     torch.save(model.state_dict(), "../model_weights_convolutional")
-    model = CNN(input_size=input_size, num_classes=num_classes).to(device)
+    model = CNN(input_size=1, num_classes=2).to(device)
     model.load_state_dict(torch.load("../model_weights_convolutional"))
     model.eval()
 

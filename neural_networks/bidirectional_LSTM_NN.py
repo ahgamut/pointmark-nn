@@ -50,12 +50,12 @@ def train_model():
     num_classes = 2
     learning_rate = 0.001
     batch_size = 12  # controls row of map1 if correct size or less
-    num_epochs = 200
+    num_epochs = 10
 
     # Load data
     # Since going to load as image, convert to tensor
     # dataset = CustomImageDataset(root_dir="D:/test/data", transform=transforms.ToTensor())
-    dataset = CImgDataset("../test51.zip")
+    dataset = CImgDataset("../test.zip")
 
     train_set, test_set = torch.utils.data.random_split(
         dataset, [0.8, 0.2]
@@ -81,7 +81,6 @@ def train_model():
 
             # get data to cuda if possible
             data = data.to(device=device).squeeze(1)
-            print(data.shape)
             targets = targets.to(device=device)
 
             # forward
@@ -135,7 +134,7 @@ def main():
     check_accuracy(test_loader, model, False)
 
     torch.save(model.state_dict(), "../model_weights_bidirectional")
-    model = BidirectionalRNN(input_size, hidden_size, num_layers, num_classes).to(
+    model = BidirectionalRNN(25, 256, 3, 2).to(
         device
     )
     model.load_state_dict(torch.load("../model_weights_bidirectional"))

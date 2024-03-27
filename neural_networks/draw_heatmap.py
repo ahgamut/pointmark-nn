@@ -3,19 +3,14 @@ import skimage.io as skio
 import skimage.transform as sktrans
 import matplotlib.pyplot as plt
 import torch
+import os
 
 from linear_NN import NN as MOD1
 from convolutional_NN import CNN as MOD2
-#from recurrent_NN import RNN as MOD3
-#from recurrent_GRU_NN import RNN as MOD4
-#from recurrent_LSTM_NN import RNN as MOD5
-from bidirectional_LSTM_NN import BidirectionalRNN as MOD6
-"""
 from recurrent_NN import RNN as MOD3
 from recurrent_GRU_NN import RNN as MOD4
 from recurrent_LSTM_NN import RNN as MOD5
-"""
-
+from bidirectional_LSTM_NN import BidirectionalRNN as MOD6
 
 class ModelMaker:
     def __init__(self, initfunc, wts_file, reshape=False):
@@ -46,16 +41,10 @@ class ModelMaker:
 
 MOD1.make = lambda: MOD1(input_size=625, num_classes=2)
 MOD2.make = lambda: MOD2(input_size=1, num_classes=2)
-#MOD2.make = lambda: MOD3(25, 256, 2, 2)
-#MOD2.make = lambda: MOD4(25, 256, 2, 2)
-#MOD2.make = lambda: MOD5(25, 256, 2, 2)
+MOD3.make = lambda: MOD3(25, 256, 3, 2, 25)
+MOD4.make = lambda: MOD4(25, 256, 3, 2, 25)
+MOD5.make = lambda: MOD5(25, 256, 3, 2, 25)
 MOD6.make = lambda: MOD6(25, 256, 3, 2)
-"""
-MOD3.make = lambda: MOD3(25, 256, 2, 2)
-MOD4.make = lambda: MOD4(25, 256, 2, 2)
-MOD5.make = lambda: MOD5(25, 256, 2, 2)
-"""
-
 
 def run_on_image(maker, img):
     tform = sktrans.EuclideanTransform(rotation=0, translation=(12, 12))
@@ -86,7 +75,8 @@ def run_on_image(maker, img):
     plt.show()
 
     plt.imshow(res, "Reds")
-    plt.savefig("../heatmaps/test.png", bbox_inches='tight')
+    name = os.path.basename()
+    plt.savefig("../heatmaps" + name + "test.png", bbox_inches='tight')
 
 def main():
     make1 = ModelMaker(MOD1.make, "../model_weights_linear", True)
