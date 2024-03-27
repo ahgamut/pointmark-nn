@@ -34,7 +34,7 @@ def get_img_and_pts(path, size):
         f = np.random.randint(lower_bounds, upper_bounds, 2)
         dist = np.sqrt(np.sum((pts - f) ** 2, axis=1))
 
-        if np.min(dist) > size / 2:
+        if np.min(dist) > 3:
             count += 1
             fakes.append(f)
 
