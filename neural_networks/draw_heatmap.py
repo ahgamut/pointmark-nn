@@ -4,6 +4,7 @@ import skimage.transform as sktrans
 import matplotlib.pyplot as plt
 import torch
 from pathlib import Path
+import imageio
 
 from linear_NN import NN as MOD1
 from convolutional_NN import CNN as MOD2
@@ -46,13 +47,8 @@ MOD4.make = lambda: MOD4(25, 256, 2, 2, 25)
 MOD5.make = lambda: MOD5(25, 256, 2, 2, 25)
 MOD6.make = lambda: MOD6(25, 256, 3, 2)
 
-def feed_heatmap_to_nn():
-    pass
-
 def run_on_image(maker, img_name, nn_type, num_epochs=None):
-    
     img = skio.imread(img_name)
-
     tform = sktrans.EuclideanTransform(rotation=0, translation=(12, 12))
     padded_image = np.float32(
         sktrans.warp(
@@ -80,8 +76,6 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
 
     plt.show()
 
-    res = np.maximum(res, 0.95*np.max(res))
-
     plt.imshow(res, "Reds")
     name = Path(img_name).stem
     if (num_epochs):
@@ -90,6 +84,17 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
     else:
         plt.savefig("../heatmaps/" + name + "_" + nn_type + ".png", bbox_inches='tight')
 
+    #res = np.maximum(res, 0.95*np.max(res))
+    res = res * 1.0 * (res > 0.85*np.max((res)))
+
+    plt.imshow(res, "Reds")
+    plt.show()
+
+    plt.imshow(img, "Greys")
+    plt.imshow(res, "Reds", alpha=0.6)
+
+    plt.show()
+
 def main():
     wts_file = "../model_weights_linear"
     make1 = ModelMaker(MOD1.make, wts_file, True)
@@ -97,7 +102,6 @@ def main():
     print(make1(a))
     f = "../002_07_L_01.png"
     run_on_image(make1, f, wts_file[17:])
-
 
 if __name__ == "__main__":
     main()
