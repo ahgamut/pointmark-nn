@@ -30,7 +30,7 @@ class ModelMaker:
         if self.reshape:
             x = x.reshape(1, -1)
         else:
-            x = x.unsqueeze(0)#unsqueeze.(0)
+            x = x.unsqueeze(0)#.unsqueeze(0)
         res = self.net(x)
         res_max = torch.max(res)
         res_arg = torch.argmax(res)
@@ -41,12 +41,18 @@ class ModelMaker:
 
 MOD1.make = lambda: MOD1(input_size=625, num_classes=2)
 MOD2.make = lambda: MOD2(input_size=1, num_classes=2)
-MOD3.make = lambda: MOD3(25, 256, 3, 2, 25)
-MOD4.make = lambda: MOD4(25, 256, 3, 2, 25)
-MOD5.make = lambda: MOD5(25, 256, 3, 2, 25)
+MOD3.make = lambda: MOD3(25, 256, 2, 2, 25)
+MOD4.make = lambda: MOD4(25, 256, 2, 2, 25)
+MOD5.make = lambda: MOD5(25, 256, 2, 2, 25)
 MOD6.make = lambda: MOD6(25, 256, 3, 2)
 
-def run_on_image(maker, img, img_name, nn_type, num_epochs=None):
+def feed_heatmap_to_nn():
+    pass
+
+def run_on_image(maker, img_name, nn_type, num_epochs=None):
+    
+    img = skio.imread(img_name)
+
     tform = sktrans.EuclideanTransform(rotation=0, translation=(12, 12))
     padded_image = np.float32(
         sktrans.warp(
@@ -74,6 +80,8 @@ def run_on_image(maker, img, img_name, nn_type, num_epochs=None):
 
     plt.show()
 
+    res = np.maximum(res, 0.95*np.max(res))
+
     plt.imshow(res, "Reds")
     name = Path(img_name).stem
     if (num_epochs):
@@ -87,10 +95,8 @@ def main():
     make1 = ModelMaker(MOD1.make, wts_file, True)
     a = np.zeros((25, 25), dtype=np.float32)
     print(make1(a))
-    f = "../examples.png"
-    image = skio.imread(f)
-    print(image.shape)
-    run_on_image(make1, image, f, wts_file[17:], 1)
+    f = "../002_07_L_01.png"
+    run_on_image(make1, f, wts_file[17:])
 
 
 if __name__ == "__main__":
