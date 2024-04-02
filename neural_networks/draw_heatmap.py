@@ -78,14 +78,15 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
 
     plt.imshow(res, "Reds")
     name = Path(img_name).stem
+    plt.axis("off")
     if (num_epochs):
         plt.savefig("../heatmaps/" + name + "_" + nn_type + "_epochs_"
-                    + str(num_epochs) + ".png", bbox_inches='tight')
+                    + str(num_epochs) + ".png", bbox_inches='tight', pad_inches=0)
     else:
-        plt.savefig("../heatmaps/" + name + "_" + nn_type + ".png", bbox_inches='tight')
+        plt.savefig("../heatmaps/" + name + "_" + nn_type + ".png", bbox_inches='tight', pad_inches=0)
 
     #res = np.maximum(res, 0.95*np.max(res))
-    res = res * 1.0 * (res > 0.85*np.max((res)))
+    res = res * 1.0 * (res > 0.85 * np.max((res)))
 
     plt.imshow(res, "Reds")
     plt.show()
@@ -101,6 +102,7 @@ def main():
     a = np.zeros((25, 25), dtype=np.float32)
     print(make1(a))
     f = "../002_07_L_01.png"
+    #f = "../heatmaps/002_07_L_01_linear.png"
     run_on_image(make1, f, wts_file[17:])
 
 if __name__ == "__main__":
