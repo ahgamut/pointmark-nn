@@ -20,7 +20,7 @@ class ModelMaker:
         self.net.load_state_dict(torch.load(wts_file, map_location=torch.device("cpu")))
         self.net.eval()
         self.reshape = reshape
-        print(self.net)
+        #print(self.net)
 
     def __call__(self, image):
         x = torch.from_numpy(image)
@@ -40,43 +40,44 @@ class ModelMaker:
         return res_max.detach().numpy()
 
 
-MOD1.make = lambda: MOD1(input_size=625, num_classes=2)
+MOD1.make = lambda: MOD1(input_size=225, num_classes=2)
 MOD2.make = lambda: MOD2(input_size=1, num_classes=2)
-MOD3.make = lambda: MOD3(25, 256, 2, 2, 25)
-MOD4.make = lambda: MOD4(25, 256, 2, 2, 25)
-MOD5.make = lambda: MOD5(25, 256, 2, 2, 25)
-MOD6.make = lambda: MOD6(25, 256, 3, 2)
+MOD3.make = lambda: MOD3(15, 256, 2, 2, 15)
+MOD4.make = lambda: MOD4(15, 256, 2, 2, 15)
+MOD5.make = lambda: MOD5(15, 256, 2, 2, 15)
+MOD6.make = lambda: MOD6(15, 256, 3, 2)
 
 def run_on_image(maker, img_name, nn_type, num_epochs=None):
     img = skio.imread(img_name)
-    tform = sktrans.EuclideanTransform(rotation=0, translation=(12, 12))
+    tform = sktrans.EuclideanTransform(rotation=0, translation=(7, 7))
     padded_image = np.float32(
         sktrans.warp(
             img,
             tform.inverse,
-            output_shape=(img.shape[0] + 24, img.shape[1] + 24),
+            output_shape=(img.shape[0] + 14, img.shape[1] + 14),
             mode="reflect",
         )
     )
 
     fig, axs = plt.subplots(1, 2, sharex=True, sharey=True)
+    #plt.rcParams['figure.figsize'] = 220, 530
     axs[0].imshow(img, "Greys_r")
 
     res = np.zeros(img.shape, dtype=np.float32)
 
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
-            print(i,j)
-            i2 = i + 12
-            j2 = j + 12
-            sub_image = padded_image[i2 - 12 : i2 + 13, j2 - 12 : j2 + 13]
+            #print(i,j)
+            i2 = i + 7
+            j2 = j + 7
+            sub_image = padded_image[i2 - 7 : i2 + 8, j2 - 7 : j2 + 8]
             res[i, j] = maker(sub_image)
 
     axs[1].imshow(res, "Reds")
 
     plt.show()
 
-    plt.imshow(res, "Reds")
+    plt.imshow(res, "Reds", aspect='equal')
     name = Path(img_name).stem
     plt.axis("off")
     if (num_epochs):
@@ -97,10 +98,10 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
     plt.show()
 
 def main():
-    wts_file = "../model_weights_linear"
-    make1 = ModelMaker(MOD1.make, wts_file, True)
-    a = np.zeros((25, 25), dtype=np.float32)
-    print(make1(a))
+    wts_file = "../model_weights_recurrent"
+    make1 = ModelMaker(MOD3.make, wts_file, False)
+    a = np.zeros((15, 15), dtype=np.float32)
+    #print(make1(a))
     f = "../002_07_L_01.png"
     #f = "../heatmaps/002_07_L_01_linear.png"
     run_on_image(make1, f, wts_file[17:])
