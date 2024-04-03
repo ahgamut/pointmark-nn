@@ -43,14 +43,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def train_model():
 
     # Hyperparameters
-    input_size = 25  # row of mat2
+    input_size = 15  # row of mat2
     sequence_length = 25
     num_layers = 3
     hidden_size = 256
     num_classes = 2
     learning_rate = 0.001
     batch_size = 12  # controls row of map1 if correct size or less
-    num_epochs = 10
+    num_epochs = 1
 
     # Load data
     # Since going to load as image, convert to tensor
@@ -134,7 +134,7 @@ def main():
     check_accuracy(test_loader, model, False)
 
     torch.save(model.state_dict(), "../model_weights_bidirectional")
-    model = BidirectionalRNN(25, 256, 3, 2).to(
+    model = BidirectionalRNN(15, 256, 3, 2).to(
         device
     )
     model.load_state_dict(torch.load("../model_weights_bidirectional"))

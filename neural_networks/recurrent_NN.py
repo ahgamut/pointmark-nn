@@ -35,13 +35,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def train_model():
 
     # Hyperparameters
-    input_size = 25  # row of mat2
-    sequence_length = 25
+    input_size = 15  # row of mat2
+    sequence_length = 15
     num_layers = 3
     hidden_size = 256
     num_classes = 2
     learning_rate = 0.001  # note, for a regular RNN, change this to 0.001
-    batch_size = 12  # controls row of map1 if correct size or less
+    batch_size = 25  # controls row of map1 if correct size or less
     num_epochs = 1
 
     # Load data
@@ -121,7 +121,7 @@ def main():
     check_accuracy(test_loader, model, False)
 
     torch.save(model.state_dict(), "../model_weights_recurrent")
-    model = RNN(25, 256, 3, 2, 25).to(device)
+    model = RNN(15, 256, 3, 2, 15).to(device)
     model.load_state_dict(torch.load("../model_weights_recurrent"))
     model.eval()
 

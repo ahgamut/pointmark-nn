@@ -30,11 +30,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train_model():
     # Hyperparameters
-    input_size = 625  # row of mat2
+    input_size = 225  # row of mat2
     num_classes = 2
     learning_rate = 0.001
     batch_size = 12  # controls row of map1 if correct size or less
-    num_epochs = 10
+    num_epochs = 1
 
     # Load data
     # Since going to load as image, convert to tensor
@@ -122,7 +122,7 @@ def main():
     check_accuracy(test_loader, model, False)
 
     torch.save(model.state_dict(), "../model_weights_linear")
-    model2 = NN(input_size=625, num_classes=2).to(device)
+    model2 = NN(input_size=225, num_classes=2).to(device)
     model2.load_state_dict(torch.load("../model_weights_linear"))
     model2.eval()
 

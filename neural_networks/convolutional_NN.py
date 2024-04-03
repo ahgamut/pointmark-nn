@@ -28,7 +28,7 @@ class CNN(nn.Module):
             stride=(1, 1),
             padding=(1, 1),
         )
-        self.fc1 = nn.Linear(72, num_classes)  # fully connected layer, row of mat2
+        self.fc1 = nn.Linear(18, num_classes)  # fully connected layer, row of mat2
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -51,7 +51,7 @@ def train_model():
     learning_rate = 0.001
     batch_size = 25  # controls row of map1 if correct size or less, controls how many samples are tested together,
     # so lower is more accurate but slower
-    num_epochs = 10
+    num_epochs = 1
 
     # Load data
     # Since going to load as image, convert to tensor
