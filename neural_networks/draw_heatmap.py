@@ -95,6 +95,13 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
     plt.imshow(img, "Greys")
     plt.imshow(res, "Reds", alpha=0.6)
 
+    plt.axis("off")
+    if (num_epochs):
+        plt.savefig("../heatmaps/" + name + "_" + nn_type + "_epochs_"
+                    + str(num_epochs) + "_compare.png", bbox_inches='tight', pad_inches=0)
+    else:
+        plt.savefig("../heatmaps/" + name + "_" + nn_type + "_compare.png", bbox_inches='tight', pad_inches=0)
+
     plt.show()
 
 def main():
