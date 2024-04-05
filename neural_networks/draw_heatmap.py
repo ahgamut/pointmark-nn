@@ -82,10 +82,9 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
     name = Path(img_name).stem
     plt.axis("off")
     if (num_epochs):
-        plt.savefig("../heatmaps/" + name + "_" + nn_type + "_epochs_"
-                    + str(num_epochs) + ".png", bbox_inches='tight', pad_inches=0)
+        plt.imsave("../heatmaps/" + name + "_" + nn_type + "_epochs_" + str(num_epochs) + ".png", res, cmap="Reds")
     else:
-        plt.savefig("../heatmaps/" + name + "_" + nn_type + ".png", bbox_inches='tight', pad_inches=0)
+        plt.imsave("../heatmaps/" + name + "_" + nn_type + ".png", res, cmap="Reds")
 
     #res = np.maximum(res, 0.95*np.max(res))
     res = res * 1.0 * (res > 0.85 * np.max((res)))
@@ -96,12 +95,14 @@ def run_on_image(maker, img_name, nn_type, num_epochs=None):
     plt.imshow(img, "Greys")
     plt.imshow(res, "Reds", alpha=0.6)
 
+    plt.gcf().set_size_inches(220 / 77, 530 / 77)  # 77 is the golden number takes the figure down to 220x530
     plt.axis("off")
     if (num_epochs):
         plt.savefig("../heatmaps/" + name + "_" + nn_type + "_epochs_"
                     + str(num_epochs) + "_compare.png", bbox_inches='tight', pad_inches=0)
     else:
-        plt.savefig("../heatmaps/" + name + "_" + nn_type + "_compare.png", bbox_inches='tight', pad_inches=0)
+        plt.savefig("../heatmaps/" + name + "_" + nn_type + "_compare.png",
+                    bbox_inches='tight', pad_inches=0, dpi=dpi)
 
     plt.show()
 
