@@ -1,5 +1,6 @@
 import numpy as np
 import skimage.io as skio
+import skimage.color as skcolor
 import skimage.transform as sktrans
 import matplotlib.pyplot as plt
 import torch
@@ -49,7 +50,10 @@ MOD6.make = lambda: MOD6(15, 256, 3, 2)
 
 
 def run_on_image(maker, img_name, nn_type, num_epochs=None):
+    #img = skcolor.rgb2gray(skio.imread(img_name)[:, :, :3])
     img = skio.imread(img_name)
+    if len(img.shape) == 3 and img.shape[2] >= 3:
+        img = skcolor.rgb2gray(img[:, :, :3])
     tform = sktrans.EuclideanTransform(rotation=0, translation=(7, 7))
     padded_image = np.float32(
         sktrans.warp(
@@ -111,6 +115,7 @@ def main():
     a = np.zeros((15, 15), dtype=np.float32)
     #print(make1(a))
     f = "../002_07_L_01.png"
+    #f = "../heatmaps/002_07_L_01_linear.png"
     run_on_image(make1, f, wts_file[17:])
 
 if __name__ == "__main__":
