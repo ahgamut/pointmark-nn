@@ -11,4 +11,5 @@ help of neural networks.
 
 This repo contains:
 
-- TBW
+- Neural network models and a heatmapping program for application and viewing results
+- Example PDF showing a convolutional operation
