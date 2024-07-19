@@ -6,7 +6,7 @@ and apply them via neural networks to capture interest points in Shoeprint image
 ## What is the purpose of this repo?
 
 The purpose of this repo is to automate what is accomplished via PointMark (finding
-interest points in Shoeprint images) and do so faster and more accurately, with the
+interest points in shoeprint images) and do so faster and more accurately, with the
 help of neural networks.
 
 This repo contains:
